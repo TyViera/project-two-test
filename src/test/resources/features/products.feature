@@ -5,17 +5,29 @@ Feature: Crud for products
   To manage them inside the system
 
   Background:
+    * callonce read('classpath:karate-data.js') ['productIds', 'productsData']
     Given url baseUrl
-    * callonce read('classpath:arrays.js') ['productIds', 'productsData']
     * def operationPath = 'products'
     And header Authorization = callonce read('classpath:basic-auth.js') { username: 'user', password: 'password' }
     And header Accept = 'application/json'
 
   @creation @positive_case
   Scenario Outline: Successful product creation - <file-name>
-    * def inputRequest = read('classpath:api/products/create/<file-name>.json')
+    * def result = call read('@create-one-product') { fileName: '<file-name>' }
+    # Store created products
+    And eval extraData.productIds.push(result.response.id)
+    Examples:
+      | file-name                 |
+      | success-all-data          |
+      | success-composite-name    |
+      | success-max-length-values |
+      | success-min-length-values |
+
+  @ignore @create-one-product
+  Scenario: Successful product creation
     Given path operationPath
     And header Content-Type = 'application/json'
+    * def inputRequest = read('classpath:api/products/create/' + fileName + '.json')
     And request inputRequest
     When method post
     # Response validations
@@ -24,14 +36,6 @@ Feature: Crud for products
     And match response.id == '#present'
     And match response.name == inputRequest.name
     And match response.code == inputRequest.code
-    # Remove created products
-    And eval extraData.productIds.push(response.id)
-    Examples:
-      | file-name                 |
-      | success-all-data          |
-      | success-composite-name    |
-      | success-max-length-values |
-      | success-min-length-values |
 
   @creation @negative_case
   Scenario Outline: Failed product creation - <file-name>

@@ -5,17 +5,30 @@ Feature: Crud for clients
   To manage them inside the system
 
   Background:
+    * callonce read('classpath:karate-data.js') ['clientIds', 'clientsData']
     Given url baseUrl
-    * callonce read('classpath:arrays.js') ['clientIds', 'clientsData']
     * def operationPath = 'clients'
     And header Authorization = callonce read('classpath:basic-auth.js') { username: 'user', password: 'password' }
     And header Accept = 'application/json'
 
   @creation @positive_case
   Scenario Outline: Successful client creation - <file-name>
-    * def inputRequest = read('classpath:api/clients/create/<file-name>.json')
+    * def result = call read('@create-one-client') { fileName: '<file-name>' }
+    # Store created clients
+    And eval extraData.clientIds.push(result.response.id)
+    Examples:
+      | file-name                 |
+      | success-all-data          |
+      | success-max-length-values |
+      | success-min-length-values |
+      | success-no-address        |
+      | success-two-names         |
+
+  @ignore @create-one-client
+  Scenario: Successful client creation
     Given path operationPath
     And header Content-Type = 'application/json'
+    * def inputRequest = read('classpath:api/clients/create/' + fileName + '.json')
     And request inputRequest
     When method post
     # Response validations
@@ -25,15 +38,6 @@ Feature: Crud for clients
     And match response.name == inputRequest.name
     And match response.nif == inputRequest.nif
     And match response.address == inputRequest.address
-    # Remove created clients
-    And eval extraData.clientIds.push(response.id)
-    Examples:
-      | file-name                 |
-      | success-all-data          |
-      | success-max-length-values |
-      | success-min-length-values |
-      | success-no-address        |
-      | success-two-names         |
 
   @creation @negative_case
   Scenario Outline: Failed client creation - <file-name>

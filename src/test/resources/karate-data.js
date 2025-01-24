@@ -1,4 +1,4 @@
-function fn() {
+function fn(arrayNames) {
 
     function getKarateProperty(propertyName, defaultValue) {
         return !!karate.properties['karate.' + propertyName] ? karate.properties['karate.' + propertyName] : defaultValue;
@@ -23,7 +23,20 @@ function fn() {
 
     let port = getKarateProperty('port', '8080');
     karate.log('karate.port set to ' + port);
-    return {
-        baseUrl: host + ':' + port
+
+
+    const config = {
+        baseUrl: host + ':' + port,
+        extraData: {}
     };
+    if (typeof arrayNames === 'string') {
+        config.extraData[arrayNames] = [];
+    } else if (Array.isArray(arrayNames)) {
+        arrayNames.forEach(arrayName => {
+            config.extraData[arrayName] = [];
+        });
+    }
+    karate.log('Arrays is being initialized with an empty array');
+
+    return config;
 }
