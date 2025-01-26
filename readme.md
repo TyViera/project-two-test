@@ -13,7 +13,7 @@ The command to run it will be:
 
 ## Second execution
 
-There are some projects that have include all the endpoints in the basic security configuration so this second run it to
+There are some projects that have included all the endpoints in the basic security configuration so this second run it to
 pass the basic auth for all the calls except the swagger-related ones
 
 The command to run it will be:
