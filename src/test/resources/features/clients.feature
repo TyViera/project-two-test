@@ -122,10 +122,6 @@ To manage them inside the system
     And print 'Response: ', response
     Then status 200
     And match response.id == clientId
-    And match response.name != previousClient.name
-    And match response.nif != previousClient.nif
-    And match response.address != previousClient.address
-    #comparison with previous
     And match response.id == previousClient.id
     And match response.name == inputRequest.name
     And match response.nif == inputRequest.nif

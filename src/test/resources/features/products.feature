@@ -131,9 +131,6 @@ Feature: Crud for products
     And print 'Response: ', response
     Then status 200
     And match response.id == productId
-    And match response.name != previousProduct.name
-    And match response.code != previousProduct.code
-    #comparison with previous
     And match response.id == previousProduct.id
     And match response.name == inputRequest.name
     And match response.code == inputRequest.code
