@@ -8,12 +8,13 @@ Feature: Crud for products
     * callonce read('classpath:karate-data.js') ['productIds', 'productsData']
     Given url baseUrl
     * def operationPath = 'products'
-    And header Authorization = callonce read('classpath:basic-auth.js') { username: 'user', password: 'password' }
+    And header Authorization = callonce read('classpath:basic-auth.js')
     And header Accept = 'application/json'
 
   @creation @positive_case
   Scenario Outline: Successful product creation - <file-name>
-    * def result = call read('@create-one-product') { fileName: '<file-name>' }
+    * def inputRequest = read('classpath:api/products/create/<file-name>.json')
+    * def result = call read('@create-one-product') { inputRequest: inputRequest }
     # Store created products
     And eval extraData.productIds.push(result.response.id)
     Examples:
@@ -27,7 +28,6 @@ Feature: Crud for products
   Scenario: Successful product creation
     Given path operationPath
     And header Content-Type = 'application/json'
-    * def inputRequest = read('classpath:api/products/create/' + fileName + '.json')
     And request inputRequest
     When method post
     # Response validations
@@ -82,6 +82,7 @@ Feature: Crud for products
 
   @read @positive_case
   Scenario: Successful product by id query
+    * assert extraData.productIds.length > 0
     * def fun = function (item) { return karate.call('@get_by_id', {productId: item, dataArray: extraData.productsData}); }
     * karate.forEach(extraData.productIds, fun)
 
@@ -111,6 +112,7 @@ Feature: Crud for products
 
   @update @positive_case
   Scenario: Successful product modification
+    * assert extraData.productIds.length > 0
     * def filesIndex = 0
     * def files = ['success-one-name']
     * def fun = function (k, i) { return karate.call('@update-by-id', {productId: extraData.productIds[i], index: i, dataArray: extraData.productsData, fileName: files[(filesIndex++) % files.length ]}); }
@@ -140,6 +142,7 @@ Feature: Crud for products
 
   @update @negative_case
   Scenario: Failed product modification - code already in use
+    * assert extraData.productIds.length > 0
     * def inputRequest = read('classpath:api/products/update/error-repeated-code.json')
     Given path operationPath + '/' + extraData.productIds[0]
     And header Content-Type = 'application/json'
@@ -152,6 +155,7 @@ Feature: Crud for products
 
   @delete @positive_case
   Scenario: Successful product by id deletion
+    * assert extraData.productIds.length > 0
     * def fun = function (item) { return karate.call('@delete_by_id', {productId: item}); }
     * karate.forEach(extraData.productIds, fun)
 

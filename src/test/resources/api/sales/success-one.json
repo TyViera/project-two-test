@@ -1,0 +1,11 @@
+{
+  "client": {
+    "id": "<client-id>"
+  },
+  "products": [
+    {
+      "id": "<product-id>",
+      "quantity": 1
+    }
+  ]
+}

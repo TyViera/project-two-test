@@ -24,9 +24,19 @@ function fn(arrayNames) {
     let port = getKarateProperty('port', '8080');
     karate.log('karate.port set to ' + port);
 
+    let authUser = getKarateProperty('auth.user', 'admin');
+    karate.log('karate.auth.user has been set');
+
+    let authPassword = getKarateProperty('auth.pass', 'admin');
+    karate.log('karate.auth.pass has been set');
+
 
     const config = {
         baseUrl: host + ':' + port,
+        auth: {
+            username: authUser,
+            password: authPassword
+        },
         extraData: {}
     };
     if (typeof arrayNames === 'string') {

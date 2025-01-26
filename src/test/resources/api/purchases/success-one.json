@@ -1,0 +1,9 @@
+{
+  "supplier": "Amazon store",
+  "products": [
+    {
+      "id": "<product-id>",
+      "quantity": 50
+    }
+  ]
+}

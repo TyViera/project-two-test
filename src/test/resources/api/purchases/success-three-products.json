@@ -1,0 +1,17 @@
+{
+  "supplier": "Country INC",
+  "products": [
+    {
+      "id": "<product-id-1>",
+      "quantity": 50
+    },
+    {
+      "id": "<product-id-2>",
+      "quantity": 80
+    },
+    {
+      "id": "<product-id-3>",
+      "quantity": 120
+    }
+  ]
+}

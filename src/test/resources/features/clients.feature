@@ -1,19 +1,20 @@
 @clients
 @crud
 Feature: Crud for clients
-  As a user of the application I want to be able to create, read, update and delete clients
-  To manage them inside the system
+As a user of the application I want to be able to create, read, update and delete clients
+To manage them inside the system
 
   Background:
     * callonce read('classpath:karate-data.js') ['clientIds', 'clientsData']
     Given url baseUrl
     * def operationPath = 'clients'
-    And header Authorization = callonce read('classpath:basic-auth.js') { username: 'user', password: 'password' }
+    And header Authorization = callonce read('classpath:basic-auth.js')
     And header Accept = 'application/json'
 
   @creation @positive_case
   Scenario Outline: Successful client creation - <file-name>
-    * def result = call read('@create-one-client') { fileName: '<file-name>' }
+    * def inputRequest = read('classpath:api/clients/create/<file-name>.json')
+    * def result = call read('@create-one-client') { inputRequest: '#(inputRequest)' }
     # Store created clients
     And eval extraData.clientIds.push(result.response.id)
     Examples:
@@ -28,7 +29,6 @@ Feature: Crud for clients
   Scenario: Successful client creation
     Given path operationPath
     And header Content-Type = 'application/json'
-    * def inputRequest = read('classpath:api/clients/create/' + fileName + '.json')
     And request inputRequest
     When method post
     # Response validations
@@ -74,6 +74,7 @@ Feature: Crud for clients
 
   @read @positive_case
   Scenario: Successful client by id query
+    * assert extraData.clientIds.length > 0
     * def fun = function (item) { return karate.call('@get_by_id', {clientId: item, dataArray: extraData.clientsData}); }
     * karate.forEach(extraData.clientIds, fun)
 
@@ -103,6 +104,7 @@ Feature: Crud for clients
 
   @update @positive_case
   Scenario: Successful client modification
+    * assert extraData.clientIds.length > 0
     * def filesIndex = 0
     * def files = ['success-one-name', 'success-no-address']
     * def fun = function (k, i) { return karate.call('@update-by-id', {clientId: extraData.clientIds[i], index: i, dataArray: extraData.clientsData, fileName: files[(filesIndex++) % files.length ]}); }
@@ -133,6 +135,7 @@ Feature: Crud for clients
 
   @delete @positive_case
   Scenario: Successful client by id deletion
+    * assert extraData.clientIds.length > 0
     * def fun = function (item) { return karate.call('@delete_by_id', {clientId: item}); }
     * karate.forEach(extraData.clientIds, fun)
 
