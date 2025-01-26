@@ -115,13 +115,12 @@ Feature: Crud for products
     * assert extraData.productIds.length > 0
     * def filesIndex = 0
     * def files = ['success-one-name']
-    * def fun = function (k, i) { return karate.call('@update-by-id', {productId: extraData.productIds[i], index: i, dataArray: extraData.productsData, fileName: files[(filesIndex++) % files.length ]}); }
+    * def fun = function (k, i) { return karate.call('@update-by-id', {productId: extraData.productIds[i], fileName: files[(filesIndex++) % files.length ]}); }
     * karate.forEach(extraData.productIds, fun)
     * call fun(extraData.productIds[0], 0)
 
   @ignore @update-by-id
   Scenario: Successful product modification
-    * def previousProduct = dataArray[index]
     * def inputRequest = read('classpath:api/products/update/' + fileName + '.json')
     Given path operationPath + '/' + productId
     And header Content-Type = 'application/json'
@@ -131,11 +130,8 @@ Feature: Crud for products
     And print 'Response: ', response
     Then status 200
     And match response.id == productId
-    And match response.id == previousProduct.id
     And match response.name == inputRequest.name
     And match response.code == inputRequest.code
-    #Update the product data
-    And eval dataArray[index] = response
 
   @update @negative_case
   Scenario: Failed product modification - code already in use

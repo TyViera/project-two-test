@@ -107,12 +107,11 @@ To manage them inside the system
     * assert extraData.clientIds.length > 0
     * def filesIndex = 0
     * def files = ['success-one-name', 'success-no-address']
-    * def fun = function (k, i) { return karate.call('@update-by-id', {clientId: extraData.clientIds[i], index: i, dataArray: extraData.clientsData, fileName: files[(filesIndex++) % files.length ]}); }
+    * def fun = function (k, i) { return karate.call('@update-by-id', {clientId: extraData.clientIds[i], fileName: files[(filesIndex++) % files.length ]}); }
     * karate.forEach(extraData.clientIds, fun)
 
   @ignore @update-by-id
   Scenario: Successful client modification
-    * def previousClient = dataArray[index]
     * def inputRequest = read('classpath:api/clients/update/' + fileName + '.json')
     Given path operationPath + '/' + clientId
     And header Content-Type = 'application/json'
@@ -122,12 +121,9 @@ To manage them inside the system
     And print 'Response: ', response
     Then status 200
     And match response.id == clientId
-    And match response.id == previousClient.id
     And match response.name == inputRequest.name
     And match response.nif == inputRequest.nif
     And match response.address == inputRequest.address
-    #Update the client data
-    And eval dataArray[index] = response
 
   @delete @positive_case
   Scenario: Successful client by id deletion
