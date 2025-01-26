@@ -11,7 +11,7 @@ To renew the product stock in the system
     * def operationPath = 'purchases'
     * def createProductFunctionName = 'products.feature@create-one-product'
     * def doPurchaseFunctionName = '@do_purchase'
-    And header Authorization = callonce read('classpath:basic-auth.js')
+    And header Authorization = callonce read('classpath:basic-auth.js') 'purchases'
     And header Accept = 'application/json'
     And header Content-Type = 'application/json'
 
@@ -23,7 +23,7 @@ To renew the product stock in the system
     * def purchaseRequest = read('classpath:api/purchases/success-one.json')
     * purchaseRequest.products[0].id = productResult.response.id
     # Purchase operation
-    * call read(doPurchaseFunctionName) { purchaseRequest: purchaseRequest }
+    * call read(doPurchaseFunctionName) { purchaseRequest: '#(purchaseRequest)' }
     # Store created product
     And eval extraData.products.push(productResult.response.id)
 
@@ -44,7 +44,7 @@ To renew the product stock in the system
     * def productResult = call read(createProductFunctionName) { inputRequest: '#(productRequest)' }
     * purchaseRequest.products[2].id = productResult.response.id
     # Purchase operation
-    * call read(doPurchaseFunctionName) { purchaseRequest: purchaseRequest }
+    * call read(doPurchaseFunctionName) { purchaseRequest: '#(purchaseRequest)' }
 
   @ignore @do_purchase
   Scenario: Do a purchase

@@ -30,12 +30,15 @@ function fn(arrayNames) {
     let authPassword = getKarateProperty('auth.pass', 'admin');
     karate.log('karate.auth.pass has been set');
 
+    let authInCrud = eval(getKarateProperty('auth.crud', 'false'));
+    karate.log('karate.auth.crud set to ' + authInCrud);
 
     const config = {
         baseUrl: host + ':' + port,
         auth: {
             username: authUser,
-            password: authPassword
+            password: authPassword,
+            authInCrud: authInCrud
         },
         extraData: {}
     };

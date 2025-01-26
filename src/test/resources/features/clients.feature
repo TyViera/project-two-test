@@ -8,7 +8,7 @@ To manage them inside the system
     * callonce read('classpath:karate-data.js') ['clientIds', 'clientsData']
     Given url baseUrl
     * def operationPath = 'clients'
-    And header Authorization = callonce read('classpath:basic-auth.js')
+    And header Authorization = callonce read('classpath:basic-auth.js') 'clients'
     And header Accept = 'application/json'
 
   @creation @positive_case

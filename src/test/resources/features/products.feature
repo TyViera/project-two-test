@@ -8,7 +8,7 @@ Feature: Crud for products
     * callonce read('classpath:karate-data.js') ['productIds', 'productsData']
     Given url baseUrl
     * def operationPath = 'products'
-    And header Authorization = callonce read('classpath:basic-auth.js')
+    And header Authorization = callonce read('classpath:basic-auth.js') 'products'
     And header Accept = 'application/json'
 
   @creation @positive_case

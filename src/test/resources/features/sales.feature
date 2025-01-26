@@ -14,12 +14,12 @@ To get money
     * def doPurchaseFunctionName = 'purchase.feature@do_purchase'
     * def doSaleFunctionName = '@do_sale'
     * def doFailedSaleFunctionName = '@do_failed_sale'
-    And header Authorization = callonce read('classpath:basic-auth.js')
+    And header Authorization = callonce read('classpath:basic-auth.js') 'sales'
     And header Accept = 'application/json'
     And header Content-Type = 'application/json'
     * def clientRequest = { "name": "Client", "nif": "123456789" }
 
-  @positive_case @doA
+  @positive_case
   Scenario Outline: Successful sale - <scenario_name>
     * def saleRequest = read('classpath:api/sales/success-one.json')
     # Client creation
@@ -41,7 +41,7 @@ To get money
     Examples:
       | scenario_name  | product_code | quantity_to_purchase | quantity_to_sale |
       | one product    | PS971923T    | 100                  | 12               |
-      #| sale all stock | PS439848T    | 7                    | 7                |
+      | sale all stock | PS439848T    | 7                    | 7                |
 
   @positive_case
   Scenario: Successful sale for multiple products
