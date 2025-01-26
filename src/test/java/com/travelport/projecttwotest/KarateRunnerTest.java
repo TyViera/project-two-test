@@ -1,7 +1,8 @@
 package com.travelport.projecttwotest;
 
 import com.intuit.karate.junit5.Karate;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -25,12 +26,16 @@ public class KarateRunnerTest {
 
   @Karate.Test()
   Karate karateTests() {
-    var tags = runStock ? List.of("~@ignore") : List.of("~@ignore", "~@stock");
+    var tags = new ArrayList<String>(2);
+    tags.add("~@ignore");
+    if (!runStock) {
+      tags.add("~@stock");
+    }
     return Karate.run("./target/test-classes/features")
         .systemProperty("karate.host", remoteServerHost)
         .systemProperty("karate.port", remoteServerPort)
         .systemProperty("karate.auth.user", authUser)
         .systemProperty("karate.auth.pass", authPassword)
-        .tags(tags);
+        .tags(Collections.unmodifiableList(tags));
   }
 }
