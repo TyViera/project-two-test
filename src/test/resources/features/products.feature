@@ -14,7 +14,7 @@ Feature: Crud for products
   @creation @positive_case
   Scenario Outline: Successful product creation - <file-name>
     * def inputRequest = read('classpath:api/products/create/<file-name>.json')
-    * def result = call read('@create-one-product') { inputRequest: inputRequest }
+    * def result = call read('@create-one-product') { inputRequest: '#(inputRequest)' }
     # Store created products
     And eval extraData.productIds.push(result.response.id)
     Examples:
@@ -115,13 +115,14 @@ Feature: Crud for products
     * assert extraData.productIds.length > 0
     * def filesIndex = 0
     * def files = ['success-one-name']
-    * def fun = function (k, i) { return karate.call('@update-by-id', {productId: extraData.productIds[i], fileName: files[(filesIndex++) % files.length ]}); }
+    * def fun = function (k, i) { return karate.call('@update-by-id', {productId: extraData.productIds[i], fileName: files[(filesIndex++) % files.length ], index: i}); }
     * karate.forEach(extraData.productIds, fun)
     * call fun(extraData.productIds[0], 0)
 
   @ignore @update-by-id
   Scenario: Successful product modification
     * def inputRequest = read('classpath:api/products/update/' + fileName + '.json')
+    * inputRequest.code = inputRequest.code + index
     Given path operationPath + '/' + productId
     And header Content-Type = 'application/json'
     And request inputRequest
