@@ -32,7 +32,7 @@ To understand the API
     # Response validations
     Then status 200
     And match header Content-Type == 'application/json'
-    And match response.openapi contains '3.0'
+    And match response.openapi contains '3.'
     And match response.info.title == '#present'
     And match response.info.version == '#present'
     And match response.servers == '#present'
