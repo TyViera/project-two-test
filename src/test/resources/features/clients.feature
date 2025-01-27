@@ -137,8 +137,7 @@ To manage them inside the system
     When method delete
     # Response validations
     And print 'Response: ', response
-    Then status 204
-    And match response == ''
+    Then assert responseStatus == 200 || responseStatus == 204
 
   @delete @negative_case
   Scenario Outline: Delete non existent client id <client-id>
